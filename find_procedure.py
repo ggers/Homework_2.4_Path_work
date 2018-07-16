@@ -42,30 +42,31 @@
 # 5. если да, заносим имя файла в новый список
 
 import os
+import pprint
 
+pp = pprint.PrettyPrinter(indent=4)
 migrations = 'Migrations'
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-def Database_Init(dir_name, file_type=".sql"):
+def database_init(dir_name, file_type=".sql"):
     files_total = os.listdir(os.path.join(current_dir, dir_name))
     files_type_total = [x for x in os.listdir(os.path.join(current_dir, dir_name)) if x.endswith(file_type)]
-    return (len(files_type_total), files_type_total)
+    return files_type_total
 
-def Searching_text_in_files(file_list, text):
+def searching_text_in_files(file_list, text):
     result = []
     for file in file_list:
         with open(os.path.join(current_dir, migrations, file)) as f:
             raw = f.read()
-            if text in raw:
+            if text.lower() in raw.lower():
                 result.append(file)
-    print(result)
-    print("Всего: {}".format(len(result)), "\n")
+    pp.pprint(result)
+    print("Всего: {}".format(len(result)))
     return(result)
 
 if __name__ == '__main__':
-    files = (Database_Init(migrations, ".sql")[1])
-    search = input("Введите строку поиска\n\n")
-    new_list = Searching_text_in_files(files, search)
+    files = (database_init(migrations, ".sql"))
+    search = input("Введите строку поиска\n")
+    new_list = searching_text_in_files(files, search)
     while True:
-        new_list = Searching_text_in_files(new_list, input("Введите строку поиска\n\n"))
-    pass
+        new_list = searching_text_in_files(new_list, input("Введите строку поиска\n\n"))
